@@ -54,20 +54,20 @@ fn main() {
     let mut img_buffer = image::ImageBuffer::new(IMG_WIDTH + 1, IMG_HEIGHT + 1);
     let mut random_numer_generator = rand::thread_rng();
     
-    ///get the polygon and it's edges, with a radius of half the image width or image height,
-    ///depending on which one's smallest
+    //get the polygon and it's edges, with a radius of half the image width or image height,
+    //depending on which one's smallest
     let (polygon, polygon_edges) = get_polygon_and_edges_of_radius(NR_SIDES,(std::cmp::min(IMG_WIDTH, IMG_HEIGHT) / 2) as i32);
 
-    ///generate the first point, which should be inside the polygon that is being filled
+    //generate the first point, which should be inside the polygon that is being filled
     let mut random_x_in_polygon = random_numer_generator.gen_range(0..IMG_WIDTH) as f32;
     let mut random_y_in_polygon = random_numer_generator.gen_range(0..IMG_HEIGHT) as f32;
 
-    ///iterate over all the pixels in the image buffer and set them to white
+    //iterate over all the pixels in the image buffer and set them to white
     for (_, _, pixel) in img_buffer.enumerate_pixels_mut() {
         *pixel = image::Rgb([255 as u8, 255 as u8, 255 as u8]);
     }
-    ///if the first point we created happened to fall outside the polygon, new ones are generated
-    ///untill they are inside
+    //if the first point we created happened to fall outside the polygon, new ones are generated
+    //untill they are inside
     while !polygon.contains(&Coordinate {
         x: random_x_in_polygon,
         y: random_y_in_polygon,
@@ -77,8 +77,8 @@ fn main() {
     }
 
     for _ in 0..NUMBER_OF_POINTS {
-        ///generate a point between the point generated in a previous iteration, and a random vertex in our polygon
-        let xy_randomvertex_midpoint = get_point_on_fraction_between(
+        //generate a point between the point generated in a previous iteration, and a random vertex in our polygon
+        let point_to_plot= get_point_on_fraction_between(
             polygon_edges[random_numer_generator.gen_range(0..polygon_edges.len())],
             Coordinate {
                 x: random_x_in_polygon,
@@ -86,15 +86,15 @@ fn main() {
             },
             FRACTION,
         );
-        ///color the pixel corresponding to the point that is just generated
+        //color the pixel corresponding to the point that is just generated
         img_buffer.put_pixel(
-            xy_randomvertex_midpoint.x as u32,
-            xy_randomvertex_midpoint.y as u32,
+            point_to_plot.x as u32,
+            point_to_plot.y as u32,
             image::Rgb([0 as u8, 0 as u8, 0 as u8 * 2]),
         ); 
-        random_x_in_polygon = xy_randomvertex_midpoint.x;
-        random_y_in_polygon = xy_randomvertex_midpoint.y;
+        random_x_in_polygon = point_to_plot.x;
+        random_y_in_polygon = point_to_plot.y;
     }
-    ///save the image to disk as a png
+    //save the image to disk as a png
     img_buffer.save("fractal.png").unwrap();
 }
