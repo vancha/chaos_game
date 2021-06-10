@@ -2,10 +2,15 @@ use geo::prelude::Contains; //trait to see if one geometrical object is inside a
 use geo::{Coordinate, LineString, Polygon};
 use rand::Rng;
 
+///sets the width of the resulting generated image
 const IMG_WIDTH: u32 = 400;
+///sets the height of the generated image
 const IMG_HEIGHT: u32 = 400;
+///decides on the number of points generated to create the plot in the image
 const NUMBER_OF_POINTS: u32 = 100000;
+///the fraction used in the chaos game algorithm
 const FRACTION: f32 = 1. / 6.;
+///the number of sides of the polygon to generate the fractal of
 const NR_SIDES: i32 = 6;
 
 ///if you want to get a position located on a certain spot on a line between two points
@@ -43,6 +48,8 @@ fn get_polygon_and_edges_of_radius(nr_sides:i32, radius:i32) -> (Polygon<f32>, V
     (Polygon::new(LineString::from(edges.clone()), vec![]), edges)
 }
 
+///generates an image called fractal.png
+///plots the NUMBER_OF_POINTS on the image as defined in the constant
 fn main() {
     let mut img_buffer = image::ImageBuffer::new(IMG_WIDTH + 1, IMG_HEIGHT + 1);
     let mut random_numer_generator = rand::thread_rng();
@@ -84,8 +91,7 @@ fn main() {
             xy_randomvertex_midpoint.x as u32,
             xy_randomvertex_midpoint.y as u32,
             image::Rgb([0 as u8, 0 as u8, 0 as u8 * 2]),
-        );
-        ///set the point for the next iteration 
+        ); 
         random_x_in_polygon = xy_randomvertex_midpoint.x;
         random_y_in_polygon = xy_randomvertex_midpoint.y;
     }
